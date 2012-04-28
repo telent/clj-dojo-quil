@@ -1,14 +1,18 @@
 (ns dazzle.core
-  (:use quil.core))
+  (:use [quil.core])
+  (:require [clojure.java.io :as io]
+            [clojure.string :as str]))
 
 (defn get-current-directory []
   (. (java.io.File. "src/dazzle/map.png") getCanonicalPath))
 
 (def mapimage (atom nil))
 
+(def data (map (fn [x] (str/split x #" "))  (line-seq (io/reader "src/dazzle/random.tsv"))))
+
 (defn setup []
   (smooth)                          ;;Turn on anti-aliasing
-  (frame-rate 1)                    ;;Set framerate to 1 FPS
+  (frame-rate 10)                    ;;Set framerate to 1 FPS
   )
 
                                     ;;  a nice shade of grey.
@@ -67,12 +71,11 @@
 (defn draw []
   (background 255)
   (image (load-image "map.png")  0 0)
-  (fill (lerp-color 0x296f34 0x61e2f0 0.5))
+  (fill 128 128 255)
   (doall (map (fn [[state x y]]
-                (let [r (random (* 10 (rand)))]
+                (let [r (random (* 12 (rand)))]
                   (ellipse x y r r)))
               locations)))
-
 
 (defsketch example                  ;;Define a new sketch named example
   :title "Oh so many grey circles"  ;;Set the title of the sketch
